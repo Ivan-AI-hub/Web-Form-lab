@@ -1,0 +1,65 @@
+﻿@page "/productsdata"
+@using Whosales.Domain;
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject HttpClient Http
+@using BlazorApp.Shared
+
+<h3>ProductsData</h3>
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        @for (int i = 1; i < products.Length / pageSize + 1; i++)
+        {
+            var buttonNumber = i;
+            <button class="col" @onclick="@(e => currentPage = buttonNumber)">@buttonNumber</button>
+        }
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Manufacturer</th>
+                <th>Type</th>
+                <th>StorageConditions</th>
+                <th>Package</th>
+                <th>StorageLife</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products.Skip(pageSize * (currentPage - 1)).Take(pageSize))
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Manufacturer.Name</td>
+                    <td>@product.Type.Name</td>
+                    <td>@product.StorageConditions</td>
+                    <td>@product.Package</td>
+                    <td>@product.StorageLife.Date.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private Product[]? products;
+   
+    private int pageSize = 20;
+    private int currentPage = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            products = await Http.GetFromJsonAsync<Product[]>("api/products/");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}

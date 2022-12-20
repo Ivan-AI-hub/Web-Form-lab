@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="11.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.10" />
   </ItemGroup>
 
@@ -21,8 +23,20 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Whosales.Application">
+      <HintPath>..\..\..\..\Coursework\Whosales\Whosales.Persistence\bin\Debug\net6.0\Whosales.Application.dll</HintPath>
+    </Reference>
+    <Reference Include="Whosales.Domain">
+      <HintPath>..\..\..\..\Coursework\Whosales\Whosales.Domain\bin\Debug\net6.0\Whosales.Domain.dll</HintPath>
+    </Reference>
+    <Reference Include="Whosales.Persistence">
+      <HintPath>..\..\..\..\Coursework\Whosales\Whosales.Persistence\bin\Debug\net6.0\Whosales.Persistence.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

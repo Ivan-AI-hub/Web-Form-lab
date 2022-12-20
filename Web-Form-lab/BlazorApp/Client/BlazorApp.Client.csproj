@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Shared\BlazorApp.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Whosales.Domain">
+      <HintPath>..\..\..\..\Coursework\Whosales\Whosales.Domain\bin\Debug\net6.0\Whosales.Domain.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
