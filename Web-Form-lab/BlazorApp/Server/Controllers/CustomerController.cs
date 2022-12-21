@@ -15,7 +15,7 @@ namespace Whosales.Web.Controllers
 		}
 		#region Create
 		[HttpPost]
-		public IActionResult Post(Customer customer)
+		public IActionResult Post([FromBody]Customer customer)
 		{
 			if(customer == null)
 				return BadRequest();
@@ -26,8 +26,8 @@ namespace Whosales.Web.Controllers
 		#endregion
 
 		#region Update
-		[HttpPut]
-		public ActionResult Put(int id, Customer customer)
+		[HttpPut("{id}")]
+		public ActionResult Put([FromRoute]int id, [FromBody]Customer customer)
 		{
 			if (customer == null)
 				return BadRequest();
@@ -38,8 +38,8 @@ namespace Whosales.Web.Controllers
 		#endregion
 
 		#region Delete
-		[HttpDelete]
-		public ActionResult Delete(int id)
+		[HttpDelete("{id}")]
+		public ActionResult Delete([FromRoute]int id)
 		{
 			Service.Delete(id);
 			return Ok();
@@ -55,7 +55,7 @@ namespace Whosales.Web.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetById(int id)
+		public async Task<IActionResult> GetById([FromRoute] int id)
 		{
 			var customer = await Service.GetById(id);
 			if (customer == null)
