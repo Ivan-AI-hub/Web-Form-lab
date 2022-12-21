@@ -1,0 +1,56 @@
+﻿@page "/products/create/";
+@using Whosales.Domain;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Product creating</PageTitle>
+<h1>Product create</h1>
+<EditForm EditContext="editContext">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label for="Name">Name</label>
+    <InputText id="Name" @bind-Value="product.Name" DisplayName="FirstName" /><br />
+
+    <label for="StorageConditionse">StorageConditions</label>
+    <InputText id="StorageConditions" @bind-Value="product.StorageConditions" /><br />
+
+    <label for="Package">Package</label>
+    <InputText id="Package" @bind-Value="product.Package" /><br />
+
+    <button type="submit" @onclick="ProductCreate">Create</button>
+</EditForm>
+
+@functions {
+    private EditContext editContext;
+
+    private Product product { get; set; } = new Product
+        {
+            Name = "Product name",
+            StorageConditions = "Some conditions",
+            Package = "Glass",
+            ManufacturerId = 10,
+            TypeId = 10,
+            StorageLife = DateTime.Now
+        };
+
+    protected async override Task OnInitializedAsync()
+    {
+        editContext = new EditContext(product);
+    }
+
+    private async Task ProductCreate()
+    {
+        if (editContext.Validate())
+        {
+            await Http.PostAsJsonAsync("api/products/", product);
+            string message = "Product was successfully created";
+            NavigationManager.NavigateTo($"/products/successpage/{message}");
+        }
+    }
+
+    private void ToEmployeeList()
+    {
+        NavigationManager.NavigateTo("/products");
+    }
+}
