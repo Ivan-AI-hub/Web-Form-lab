@@ -1,0 +1,95 @@
+﻿@page "/products"
+@using Whosales.Domain;
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using BlazorApp.Shared
+
+<h3>ProductsData</h3>
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <NavLink class="nav-link" href="products/create/" Match="NavLinkMatch.All">
+        <span class="oi oi-plus" aria-hidden="true"></span> Create
+    </NavLink>
+    <div class="row">
+        <div class="col">
+            <label>Название продукта</label>
+            <input class="input-group" type="text" @bind-value="nameTemp" @bind-value:event="oninput">
+        </div>
+        <div class="col">
+            <div class="row">
+                @for (int i = currentPage - 5; i < currentPage - 1; i++)
+                {
+                    @if (i <= 0)
+                        continue;
+                    var buttonNumber = i;
+                    <button class="col btn btn-secondary" @onclick="@(e => currentPage = buttonNumber)">@buttonNumber</button>
+                }
+                @for (int i = currentPage; i < currentPage + 5; i++)
+                {
+                    @if (i >= products.Where(x => x.Name.Contains(nameTemp)).Count() / pageSize + 1)
+                        break;
+                    var buttonNumber = i;
+                    <button class="col btn btn-secondary" @onclick="@(e => currentPage = buttonNumber)">@buttonNumber</button>
+                }
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Manufacturer</th>
+                <th>Type</th>
+                <th>StorageConditions</th>
+                <th>Package</th>
+                <th>StorageLife</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products
+           .Where(x => x.Name.Contains(nameTemp))
+           .Skip(pageSize * (currentPage - 1))
+           .Take(pageSize))
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Manufacturer.Name</td>
+                    <td>@product.Type.Name</td>
+                    <td>@product.StorageConditions</td>
+                    <td>@product.Package</td>
+                    <td>@product.StorageLife.Date.ToShortDateString()</td>
+                    <td>
+                        <NavLink class="nav-link" href=@{$"products/edit/{product.ProductId}"}  Match="NavLinkMatch.All">
+                            <span class="oi oi-pencil" aria-hidden="true"></span> Edit
+                        </NavLink>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private Product[]? products;
+
+    private string nameTemp = "";
+    private int pageSize = 20;
+    private int currentPage = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            products = await Http.GetFromJsonAsync<Product[]>("api/products/");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}
