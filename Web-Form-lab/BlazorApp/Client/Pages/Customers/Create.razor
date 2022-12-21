@@ -1,0 +1,58 @@
+﻿@page "/customers/create/";
+@using Whosales.Domain;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Customer creating</PageTitle>
+<h1>Customer create</h1>
+<EditForm EditContext="editContext">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-control">
+        <label class="form-label" for="Name">Name</label>
+        <InputText class="input-group" id="Name" @bind-Value="customer.Name" /><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="Address">Address</label>
+        <InputText class="input-group" id="Address" @bind-Value="customer.Address" /><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="TelephoneNumber">TelephoneNumber</label>
+        <InputText class="input-group" id="TelephoneNumber" @bind-Value="customer.TelephoneNumber" /><br />
+    </div>
+
+
+    <button type="submit" @onclick="ProductCreate">Create</button>
+</EditForm>
+
+@functions {
+    private EditContext editContext;
+
+    private Customer customer { get; set; } = new Customer
+        {
+            Name = "Customer name",
+            Address = "Some address",
+            TelephoneNumber = "+375299950720"
+        };
+
+    protected async override Task OnInitializedAsync()
+    {
+        editContext = new EditContext(customer);
+    }
+
+    private async Task ProductCreate()
+    {
+        if (editContext.Validate())
+        {
+            await Http.PostAsJsonAsync("api/customers/", customer);
+            string message = "Customer was successfully created";
+            NavigationManager.NavigateTo($"/customers/successpage/{message}");
+        }
+    }
+
+    private void ToEmployeeList()
+    {
+        NavigationManager.NavigateTo("/customers");
+    }
+}

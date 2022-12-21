@@ -9,14 +9,18 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <label for="Name">Name</label>
-    <InputText id="Name" @bind-Value="product.Name" DisplayName="FirstName" /><br />
-
-    <label for="StorageConditionse">StorageConditions</label>
-    <InputText id="StorageConditions" @bind-Value="product.StorageConditions" /><br />
-
-    <label for="Package">Package</label>
-    <InputText id="Package" @bind-Value="product.Package" /><br />
+    <div class="form-control">
+        <label class="form-label" for="Name">Name</label>
+        <InputText class="input-group" id="Name" @bind-Value="product.Name"/><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="StorageConditionse">StorageConditions</label>
+        <InputText class="input-group" id="StorageConditions" @bind-Value="product.StorageConditions" /><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="Package">Package</label>
+        <InputText class="input-group" id="Package" @bind-Value="product.Package" /><br />
+    </div>
 
     <button type="submit" @onclick="ProductCreate">Create</button>
 </EditForm>
