@@ -1,0 +1,73 @@
+﻿@page "/releaseReports/edit/{id:int}";
+@using Whosales.Domain;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>ReleaseReport edit</PageTitle>
+<h1>ReleaseReport edit</h1>
+<EditForm EditContext="editContext">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-control">
+        <label class="form-label" for="Cost">Cost</label>
+        <InputNumber class="input-group" id="Cost" @bind-Value="report.Cost" /><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="Volume">Volume</label>
+        <InputNumber class="input-group" id="Volume" @bind-Value="report.Volume" /><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="Customer">Customer</label>
+        <InputSelect id="Customer" @bind-Value="report.CustomerId">
+            @foreach (var customer in customers)
+            {
+                <option value="@customer.CustomerId">@customer.Name</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="Product">Product</label>
+        <InputSelect id="Product" @bind-Value="report.ProductId">
+            @foreach (var product in products)
+            {
+                <option value="@product.ProductId">@product.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" @onclick="ReportEdit">Edit</button>
+</EditForm>
+
+@functions {
+    [Parameter]
+    public int Id { get; set; }
+
+    private ReleaseReport report { get; set; }
+    private Product[] products { get; set; }
+    private Customer[] customers { get; set; }
+    private EditContext editContext;
+
+    protected async override Task OnInitializedAsync()
+    {
+        report = await Http.GetFromJsonAsync<ReleaseReport>($"api/releaseReports/{Id}");
+        products = await Http.GetFromJsonAsync<Product[]>("api/products/");
+        customers = await Http.GetFromJsonAsync<Customer[]>("api/customers/");
+        editContext = new EditContext(report);
+    }
+
+    private async Task ReportEdit()
+    {
+        if (editContext.Validate())
+        {
+            await Http.PutAsJsonAsync($"api/releaseReports/{Id}", report);
+            string message = "ReleaseReport was successfully edited";
+            NavigationManager.NavigateTo($"/releaseReports/successpage/{message}");
+        }
+    }
+
+    private void ToEmployeeList()
+    {
+        NavigationManager.NavigateTo("/releaseReports");
+    }
+}

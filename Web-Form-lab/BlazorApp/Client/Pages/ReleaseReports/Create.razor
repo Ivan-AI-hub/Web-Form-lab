@@ -1,0 +1,80 @@
+﻿@page "/releaseReports/create/";
+@using Whosales.Domain;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>ReleaseReport creating</PageTitle>
+<h1>ReleaseReport create</h1>
+<EditForm EditContext="editContext">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-control">
+        <label class="form-label" for="Cost">Cost</label>
+        <InputNumber class="input-group" id="Cost" @bind-Value="report.Cost" /><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="Volume">Volume</label>
+        <InputNumber class="input-group" id="Volume" @bind-Value="report.Volume" /><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="Customer">Customer</label>
+        <InputSelect id="Customer" @bind-Value="report.CustomerId">
+            @foreach (var customer in customers)
+            {
+                <option value="@customer.CustomerId">@customer.Name</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="Product">Product</label>
+        <InputSelect id="Product" @bind-Value="report.ProductId">
+            @foreach (var product in products)
+            {
+                <option value="@product.ProductId">@product.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" @onclick="ProductCreate">Create</button>
+</EditForm>
+
+@functions {
+    private EditContext editContext;
+    private Product[] products { get; set; }
+    private Customer[] customers { get; set; }
+    private ReleaseReport report { get; set; } = new ReleaseReport
+        {
+            Volume = 100,
+            Cost = 100,
+            ReciveDate = new DateTime(2017, 1, 26),
+            OrderDate = new DateTime(2019, 1, 26),
+            ReleaseDate = new DateTime(2020, 1, 26),
+            CustomerId = 10,
+            EmployerId = 10,
+            StorageId = 10,
+            ProductId = 10
+        };
+
+    protected async override Task OnInitializedAsync()
+    {
+        products = await Http.GetFromJsonAsync<Product[]>("api/products/");
+        customers = await Http.GetFromJsonAsync<Customer[]>("api/customers/");
+        editContext = new EditContext(report);
+    }
+
+    private async Task ProductCreate()
+    {
+        if (editContext.Validate())
+        {
+            await Http.PostAsJsonAsync("api/releaseReports/", report);
+            string message = "ReleaseReport was successfully created";
+            NavigationManager.NavigateTo($"/releaseReports/successpage/{message}");
+        }
+    }
+
+    private void ToEmployeeList()
+    {
+        NavigationManager.NavigateTo("/releaseReports");
+    }
+}
