@@ -15,7 +15,7 @@ namespace Whosales.Web.Controllers
 
 		#region Create
 		[HttpPost]
-		public IActionResult Post(Product product)
+		public IActionResult Post([FromBody]Product product)
 		{
 			if (product == null)
 			{
@@ -28,8 +28,8 @@ namespace Whosales.Web.Controllers
 		#endregion
 
 		#region Update
-		[HttpPut]
-		public ActionResult Put(int id, Product product)
+		[HttpPut("/api/products/{id}")]
+		public ActionResult Put([FromRoute]int id, [FromBody]Product product)
 		{
 			if (product == null)
 			{
@@ -37,7 +37,7 @@ namespace Whosales.Web.Controllers
 			}
 
 			Service.Update(id, product);
-			return Redirect(_previousUrl);
+			return Ok(product);
 		}
 		#endregion
 
