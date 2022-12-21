@@ -42,8 +42,8 @@ namespace Whosales.Web.Controllers
 		#endregion
 
 		#region Delete
-		[HttpDelete]
-		public ActionResult Delete(int id)
+		[HttpDelete("{id}")]
+		public ActionResult Delete([FromRoute] int id)
 		{
 			Service.Delete(id);
 			return Ok();

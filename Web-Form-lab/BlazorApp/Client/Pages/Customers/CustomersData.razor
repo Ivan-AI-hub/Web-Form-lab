@@ -63,6 +63,9 @@ else
                             <span class="oi oi-pencil" aria-hidden="true"></span> Edit
                         </NavLink>
                     </td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="@(() => Delete(customer.CustomerId))">Delete</button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -85,5 +88,11 @@ else
         {
             exception.Redirect();
         }
+    }
+    private async Task Delete(int id)
+    {
+        await Http.DeleteAsync($"api/customers/{id}");
+        string message = "Customer was successfully deleted";
+        NavigationManager.NavigateTo($"/customers/successpage/{message}");
     }
 }

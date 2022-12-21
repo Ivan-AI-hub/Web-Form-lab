@@ -6,7 +6,7 @@
 @inject NavigationManager NavigationManager
 @using BlazorApp.Shared
 
-<h3>ProductsData</h3>
+<h3>Reports data</h3>
 @if (releaseReports == null)
 {
     <p><em>Loading...</em></p>
@@ -43,6 +43,7 @@ else
                 <th>Employer</th>
                 <th>Customer</th>
                 <th>Product</th>
+                <th>Storage</th>
                 <th>Volume</th>
                 <th>Cost</th>
             </tr>
@@ -64,6 +65,9 @@ else
                         <NavLink class="nav-link" href=@{$"releaseReports/edit/{report.ReleaseReportId}"}  Match="NavLinkMatch.All">
                             <span class="oi oi-pencil" aria-hidden="true"></span> Edit
                         </NavLink>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="@(() => Delete(report.ReleaseReportId))">Delete</button>
                     </td>
                 </tr>
             }
@@ -87,5 +91,11 @@ else
         {
             exception.Redirect();
         }
+    }
+    private async Task Delete(int id)
+    {
+        await Http.DeleteAsync($"api/releaseReports/{id}");
+        string message = "Report was successfully deleted";
+        NavigationManager.NavigateTo($"/releaseReports/successpage/{message}");
     }
 }
