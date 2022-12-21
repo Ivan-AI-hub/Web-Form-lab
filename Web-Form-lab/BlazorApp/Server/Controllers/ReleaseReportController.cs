@@ -4,7 +4,7 @@ using Whosales.Web.Services;
 
 namespace Whosales.Web.Controllers
 {
-	[Route("/api/ReleaseReports")]
+	[Route("/api/releaseReports/")]
 	public class ReleaseReportController : BaseController<ReleaseReportService, ReleaseReport>
 	{
 		public ReleaseReportController(ReleaseReportService service) : base(service)
@@ -23,19 +23,19 @@ namespace Whosales.Web.Controllers
 		#endregion
 
 		#region Update
-		[HttpPut]
-		public ActionResult Put([FromBody] ReleaseReport ReleaseReport)
+		[HttpPut("{id}")]
+		public ActionResult Put([FromRoute] int id,[FromBody] ReleaseReport ReleaseReport)
 		{
 			if (ReleaseReport == null)
 				return BadRequest();
-			Service.Update(ReleaseReport.ReleaseReportId, ReleaseReport);
+			Service.Update(id, ReleaseReport);
 			return Ok(ReleaseReport);
 		}
 		#endregion
 
 		#region Delete
 		[HttpDelete("{id}")]
-		public ActionResult Delete(int id)
+		public ActionResult Delete([FromRoute] int id)
 		{
 			Service.Delete(id);
 			return Ok();
@@ -52,7 +52,7 @@ namespace Whosales.Web.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetById(int id)
+		public async Task<IActionResult> GetById([FromRoute] int id)
 		{
 			var ReleaseReport = await Service.GetById(id);
 			if (ReleaseReport == null)
