@@ -1,0 +1,55 @@
+﻿@page "/products/edit/{id:int}";
+@using Whosales.Domain;
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Product edit</PageTitle>
+<h1>Product edit</h1>
+<EditForm EditContext="editContext">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-control">
+        <label class="form-label" for="Name">Name</label>
+        <InputText class="input-group" id="Name" @bind-Value="product.Name"/><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="StorageConditionse">StorageConditions</label>
+        <InputText class="input-group" id="StorageConditions" @bind-Value="product.StorageConditions" /><br />
+    </div>
+    <div class="form-control">
+        <label class="form-label" for="Package">Package</label>
+        <InputText class="input-group" id="Package" @bind-Value="product.Package" /><br />
+    </div>
+
+    <button type="submit" @onclick="ProductEdit">Edit</button>
+</EditForm>
+
+@functions {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Product product { get; set; }
+    private EditContext editContext;
+
+    protected async override Task OnInitializedAsync()
+    {
+        product = await Http.GetFromJsonAsync<Product>($"api/products/{Id}");
+        editContext = new EditContext(product);
+    }
+
+    private async Task ProductEdit()
+    {
+        if (editContext.Validate())
+        {
+            await Http.PutAsJsonAsync($"api/products/{Id}", product);
+            string message = "Product was successfully edited";
+            NavigationManager.NavigateTo($"/products/successpage/{message}");
+        }
+    }
+
+    private void ToEmployeeList()
+    {
+        NavigationManager.NavigateTo("/products");
+    }
+}
